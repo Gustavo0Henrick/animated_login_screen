@@ -1,4 +1,3 @@
-
 import 'package:animated_login_screen/src/widgets/wave_clipper.dart';
 import 'package:flutter/material.dart';
 
@@ -19,6 +18,7 @@ class _AuthPageState extends State<AuthPage>
   bool obscure = true;
   bool emailError = false;
   bool passwordError = false;
+  bool loading = false;
 
   @override
   void initState() {
@@ -236,62 +236,84 @@ class _AuthPageState extends State<AuthPage>
                         height: 50,
                         width: size.width / 1.25,
                         child: ElevatedButton(
-                          onPressed: () {
-                            if (_formKey.currentState!.validate()) {
-                              if (!emailError && !passwordError) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Padding(
-                                      padding:
-                                          EdgeInsets.symmetric(horizontal: 30),
-                                      child: Text('Login Successfully'),
-                                    ),
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(15))),
-                                    behavior: SnackBarBehavior.floating,
+                          onPressed: loading
+                              ? null
+                              : () async {
+                                  setState(() {
+                                    loading = true;
+                                    print(loading);
+                                  });
+                                  await Future.delayed(Duration(seconds: 2));
+                                  setState(() {
+                                    loading = false;
+                                    print(loading);
+                                  });
+                                  if (_formKey.currentState!.validate()) {
+                                    if (!emailError && !passwordError) {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        const SnackBar(
+                                          content: Padding(
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: 30),
+                                            child: Text('Login Successfully'),
+                                          ),
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(15))),
+                                          behavior: SnackBarBehavior.floating,
+                                        ),
+                                      );
+                                    } else {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        const SnackBar(
+                                          content: Padding(
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: 30),
+                                            child: Text('Login Error'),
+                                          ),
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(15))),
+                                          behavior: SnackBarBehavior.floating,
+                                        ),
+                                      );
+                                    }
+                                  } else {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Padding(
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: 30),
+                                          child: Text('Login Error'),
+                                        ),
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(15))),
+                                        behavior: SnackBarBehavior.floating,
+                                      ),
+                                    );
+                                  }
+                                },
+                          child: loading
+                              ? const Center(
+                                  child: CircularProgressIndicator(
+                                    color: Colors.deepOrange,
                                   ),
-                                );
-                              } else {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Padding(
-                                      padding:
-                                          EdgeInsets.symmetric(horizontal: 30),
-                                      child: Text('Login Error'),
-                                    ),
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(15))),
-                                    behavior: SnackBarBehavior.floating,
+                                )
+                              : const Text(
+                                  'Login',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 20,
                                   ),
-                                );
-                              }
-                            } else {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Padding(
-                                    padding:
-                                        EdgeInsets.symmetric(horizontal: 30),
-                                    child: Text('Login Error'),
-                                  ),
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(15))),
-                                  behavior: SnackBarBehavior.floating,
                                 ),
-                              );
-                            }
-                          },
-                          child: const Text(
-                            'Login',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 20,
-                            ),
-                          ),
                           style: ElevatedButton.styleFrom(
+                            onSurface: Colors.deepOrange,
+                            shadowColor: Colors.deepOrange,
+                            onPrimary: Colors.deepOrange,
                             primary: Colors.deepOrange,
                             elevation: 0,
                             shape: RoundedRectangleBorder(
